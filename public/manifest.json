@@ -1,0 +1,35 @@
+{
+  "name": "Recloth — Усовершенствуй старую одежду",
+  "short_name": "Recloth",
+  "description": "Идеи апсайклинга, статьи, мастер-классы по обновлению одежды. Recloth — сообщество для переработки и обновления старой одежды.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#F8F9FA",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "280x90",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["lifestyle", "education", "shopping"],
+  "lang": "ru",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
+
+
