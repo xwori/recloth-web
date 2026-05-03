@@ -8,19 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
     <style>
-        /* Прижимаем футер к низу */
+        /* Базовая структура для прижатия футера */
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Высота на весь экран */
+            min-height: 100vh;
             margin: 0;
         }
 
-        /* Основной контент занимает всё свободное место */
+        /* УВЕЛИЧЕННЫЙ ОТСТУП ОТ ШАПКИ */
         .quiz-main-container {
             flex: 1; 
-            padding-top: 300px; /* Отступ под твою высокую шапку */
-            padding-bottom: 50px;
+            padding-top: 450px; /* Значительно увеличили отступ, чтобы уйти из-под шапки */
+            padding-bottom: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -33,7 +33,7 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             text-align: center;
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             border: 1px solid #eee;
         }
 
@@ -71,7 +71,7 @@
 
         .progress-bar {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             height: 8px;
             background: #eee;
             border-radius: 10px;
@@ -88,9 +88,17 @@
 
         #result-screen { display: none; }
 
+        /* Адаптивность для мобильных устройств */
         @media (max-width: 768px) {
-            .quiz-main-container { padding-top: 220px; }
-            .options-grid { grid-template-columns: 1fr; }
+            .quiz-main-container { 
+                padding-top: 250px; /* На мобилках шапка обычно меньше */
+            }
+            .options-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .section-title {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
@@ -142,7 +150,6 @@
     </footer>
 
     <script>
-        // Код теста без лишних пометок
         document.addEventListener('DOMContentLoaded', function() {
             const questions = [
                 {
@@ -170,7 +177,7 @@
                     options: ["ТОЛЬКО НОВЫЕ МАТЕРИАЛЫ", "СТАРЫЕ ИЛИ НЕНУЖНЫЕ ВЕЩИ", "ТОЛЬКО ПЛАСТИК", "ТОЛЬКО СТЕКЛО"],
                     correct: 1
                 }
-            ];
+            ];[cite: 2]
 
             let currentIdx = 0;
             let score = 0;
