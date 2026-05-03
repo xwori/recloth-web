@@ -10,12 +10,12 @@
     <style>
         /* Специальный отступ для страниц с фиксированной шапкой Recloth */
         .page-content {
-            padding-top: 280px; /* Увеличили, чтобы текст не залезал под лого и меню */
+            padding-top: 280px; /* Чтобы текст не залезал под лого и меню */
             min-height: 80vh;
         }
         @media (max-width: 768px) {
             .page-content {
-                padding-top: 200px; /* Чуть меньше для мобилок */
+                padding-top: 200px;
             }
         }
         /* Центрируем заголовок и добавляем черту как на главной */
@@ -29,8 +29,25 @@
             display: block;
             width: 60px;
             height: 3px;
-            background-color: #D4AF37; /* Твой золотистый цвет */
+            background-color: #D4AF37; /* Фирменный золотистый */
             margin: 15px auto 0;
+        }
+        /* Стили для кнопок, чтобы они были одинаковыми */
+        .quiz-btn {
+            margin-top: 25px;
+            display: inline-block;
+            background-color: #D4AF37;
+            border: none;
+            padding: 12px 30px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+        .quiz-btn:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -46,7 +63,7 @@
                         <a href="/" class="nav-link">Главная</a>
                         <a href="/#about" class="nav-link">О проекте</a>
                         <a href="/#articles" class="nav-link">Статьи</a>
-                        <a href="/quizzes" class="nav-link">Опросы</a>
+                        <a href="/quizzes" class="nav-link" style="color: #D4AF37;">Опросы</a>
                         <a href="/#gallery" class="nav-link">Галерея</a>
                     </div>
                 </nav>
@@ -54,34 +71,33 @@
         </div>
     </header>
 
-    <!-- Обернули в специальный класс для отступа -->
     <main class="page-content">
         <section class="about">
             <div class="container">
                 <h2 class="section-title quizzes-title">Наши опросы</h2>
                 <p class="about-text" style="text-align: center; margin-bottom: 60px;">
-                    Твоё мнение помогает нам развивать эко-моду. Выбери подходящий тест ниже.
+                    Твоё мнение помогает нам развивать эко-моду. Проверь свои знания или поделись идеями!
                 </p>
 
                 <div class="about-cards">
-                    <!-- Карточка 1 -->
+                    <!-- Карточка 1: Google Форма -->
                     <div class="about-card fade-in visible">
                         <div class="about-card-icon">
                              <img src="https://img.icons8.com/color/96/test-passed.png" alt="icon" style="width: 80px;">
                         </div>
                         <h3 class="about-card-title">Общий опрос</h3>
-                        <p class="about-card-text">Твое мнение об апсайклинге и нашем проекте.</p>
-                        <a href="/quiz-google" class="btn btn-primary" style="margin-top: 25px; display: inline-block; background-color: #D4AF37; border: none;">Пройти</a>
+                        <p class="about-card-text">Твое мнение об апсайклинге и нашем проекте. Помоги нам стать лучше!</p>
+                        <a href="/quiz-google" class="quiz-btn">Пройти</a>
                     </div>
 
-                    <!-- Карточка 2 -->
+                    <!-- Карточка 2: Твой новый интерактивный тест -->
                     <div class="about-card fade-in visible">
                         <div class="about-card-icon">
-                            <img src="https://img.icons8.com/color/96/palette.png" alt="icon" style="width: 80px;">
+                            <img src="https://img.icons8.com/color/96/idea.png" alt="icon" style="width: 80px;">
                         </div>
-                        <h3 class="about-card-title">Тест по стилю</h3>
-                        <p class="about-card-text">Скоро: определи свой стиль кастомизации.</p>
-                        <a href="#" class="btn btn-secondary" style="margin-top: 25px; display: inline-block; opacity: 0.6; cursor: not-allowed;">В разработке</a>
+                        <h3 class="about-card-title">Знаток Апсайклинга</h3>
+                        <p class="about-card-text">Проверь, насколько хорошо ты разбираешься в теме повторного использования вещей.</p>
+                        <a href="/quiz-images" class="quiz-btn">Начать тест</a>
                     </div>
                 </div>
             </div>
