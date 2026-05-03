@@ -16,10 +16,10 @@
             background-color: #f8f9fa;
         }
 
-        /* Оптимальный отступ, чтобы контент был виден под шапкой */
+        /* МАКСИМАЛЬНЫЙ ОТСТУП ДЛЯ ВЫСОКОЙ ШАПКИ */
         .quiz-wrapper {
             flex: 1;
-            padding-top: 380px; 
+            padding-top: 550px; /* Увеличили до максимума, чтобы точно выйти из-под меню */
             padding-bottom: 100px;
             display: flex;
             flex-direction: column;
@@ -30,7 +30,7 @@
             background: #ffffff;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.12);
             text-align: center;
             width: 90%;
             max-width: 700px;
@@ -39,7 +39,7 @@
 
         .section-title {
             color: #2c3e50;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-family: 'Playfair Display', serif;
             font-size: 26px;
         }
@@ -75,7 +75,7 @@
             height: 10px;
             background: #e2e8f0;
             border-radius: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
 
@@ -89,9 +89,8 @@
         #result-screen { display: none; }
 
         @media (max-width: 768px) {
-            .quiz-wrapper { padding-top: 220px; }
+            .quiz-wrapper { padding-top: 250px; }
             .options-grid { grid-template-columns: 1fr; }
-            .quiz-card { padding: 25px; }
         }
     </style>
 </head>
@@ -118,14 +117,14 @@
         </div>
         
         <div id="question-screen" class="quiz-card">
-            <h2 id="question-text" class="section-title">Инициализация...</h2>
+            <h2 id="question-text" class="section-title">Загрузка вопросов...</h2>
             <div class="options-grid" id="options"></div>
         </div>
 
         <div id="result-screen" class="quiz-card">
-            <h2 class="section-title">Готово!</h2>
-            <p id="result-text" style="font-size: 22px; margin: 25px 0; font-family: 'Inter', sans-serif; color: #2d3748;"></p>
-            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 14px 40px; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">К другим опросам</a>
+            <h2 class="section-title">Результат готов!</h2>
+            <p id="result-text" style="font-size: 22px; margin: 25px 0; font-family: 'Inter', sans-serif;"></p>
+            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 14px 40px; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">К другим тестам</a>
         </div>
     </main>
 
@@ -208,7 +207,7 @@
                 document.getElementById('progress').style.width = '100%';
                 const resultBox = document.getElementById('result-screen');
                 resultBox.style.display = 'block';
-                document.getElementById('result-text').innerText = 'Ты набрал ' + score + ' очков из ' + quizData.length + '!';
+                document.getElementById('result-text').innerText = 'Твой результат: ' + score + ' из ' + quizData.length;
             }
 
             renderQuestion();
