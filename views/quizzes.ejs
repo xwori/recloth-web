@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Опросы и Тесты — Recloth</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .quiz-selection { display: flex; gap: 20px; justify-content: center; padding: 50px; }
+        .quiz-card { border: 2px solid #e0e0e0; padding: 20px; border-radius: 20px; width: 300px; transition: 0.3s; }
+        .quiz-card:hover { border-color: #6200ee; transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+    <div class="container" style="text-align: center;">
+        <h1>Наши опросы</h1>
+        <div class="quiz-selection">
+            <!-- Опрос 1 -->
+            <div class="quiz-card">
+                <h3>Общий опрос</h3>
+                <p>Google Форма: ваше мнение об апсайклинге</p>
+                <a href="/quiz-google" class="btn">Пройти</a>
+            </div>
+
+            <!-- Опрос 2 (Тот самый с картинками, сделаем его следующим) -->
+            <div class="quiz-card" style="opacity: 0.7;">
+                <h3>Тест по картинкам</h3>
+                <p>Скоро появится: кастомизация и стиль</p>
+                <a href="#" class="btn" style="background: gray;">В разработке</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

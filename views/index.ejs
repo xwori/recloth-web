@@ -6,19 +6,20 @@
     <meta name="description" content="Идеи апсайклинга, статьи, мастер-классы по обновлению одежды. Recloth — сообщество для переработки и обновления старой одежды.">
     <meta name="theme-color" content="#F8F9FA">
     <title>Recloth — Усовершенствуй старую одежду | Upcycling идеи</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Исправленные пути к статике -->
+    <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="images/logotip.jpg" sizes="32x32">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
 </head>
 <body>
     <header class="header" id="header">
         <div class="container">
             <div class="header-content">
                 <a href="#hero" class="logo-link">
-                    <img src="images/logotip.jpg" alt="Recloth virtual stylist" class="logo">
+                    <img src="/images/logotip.jpg" alt="Recloth virtual stylist" class="logo">
                 </a>
                 <nav class="nav" id="nav">
                     <div class="nav-content">
@@ -27,6 +28,8 @@
                         <a href="#articles" class="nav-link">Статьи</a>
                         <a href="#video-lessons" class="nav-link">Видео</a> 
                         <a href="#ideas" class="nav-link">Идеи</a>
+                        <!-- Новая ссылка на опросы -->
+                        <a href="/quizzes" class="nav-link" style="color: #6200ee; font-weight: bold;">Опросы</a>
                         <a href="#gallery" class="nav-link">Галерея</a>
                         <a href="#contacts" class="nav-link">Контакты</a>
                     </div>
@@ -46,6 +49,8 @@
                 <h2 class="hero-subtitle">Обнови, добавь, создай уникальное. Эко-мода своими руками.</h2>
                 <div class="hero-buttons">
                     <a href="#ideas" class="btn btn-primary">Смотреть идеи</a>
+                    <!-- Новая кнопка опроса -->
+                    <a href="/quizzes" class="btn btn-secondary" style="background: #6200ee; color: white; border: none;">Пройти тест</a>
                     <a href="#video-lessons" class="btn btn-secondary">Смотреть видео</a>
                 </div>
             </div>
@@ -84,32 +89,28 @@
     <section class="articles" id="video-lessons" style="background: #fff;">
         <div class="container">
             <h2 class="section-title">Видео мастер-классы</h2>
-            <div class="articles-grid" id="videoGrid">
-                </div>
+            <div class="articles-grid" id="videoGrid"></div>
         </div>
     </section>
 
     <section class="articles" id="articles">
         <div class="container">
             <h2 class="section-title">Статьи и мастер-классы</h2>
-            <div class="articles-grid" id="articlesGrid">
-                </div>
+            <div class="articles-grid" id="articlesGrid"></div>
         </div>
     </section>
 
     <section class="ideas" id="ideas">
         <div class="container">
             <h2 class="section-title">Идеи трансформаций</h2>
-            <div class="ideas-grid" id="ideasGrid">
-                </div>
+            <div class="ideas-grid" id="ideasGrid"></div>
         </div>
     </section>
 
     <section class="gallery" id="gallery">
         <div class="container">
             <h2 class="section-title">Галерея работ</h2>
-            <div class="gallery-grid" id="galleryGrid">
-                </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
         </div>
     </section>
 
@@ -201,7 +202,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p class="footer-text">© 2025 Recloth</p>
+                <p class="footer-text">© 2026 Recloth</p>
                 <div class="footer-links">
                     <a href="https://t.me/upcycling_recloth" target="_blank" rel="noopener">t.me/upcycling_recloth</a>
                     <a href="https://t.me/TexelReclothBot" target="_blank" rel="noopener">@TexelReclothBot</a>
@@ -218,12 +219,12 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Ссылка на внешний скрипт -->
+    <script src="/script.js"></script>
 
     <script>
         async function loadContent() {
             try {
-                // Загружаем статьи и видео
                 const response = await fetch('/api/articles');
                 const articles = await response.json();
                 
@@ -237,7 +238,6 @@
                     const card = document.createElement('article');
                     card.className = 'article-card fade-in visible';
                     
-                    // Если у статьи есть video_url, мы кладем её в видео-раздел, иначе в обычные статьи
                     if (article.video_url) {
                         card.innerHTML = `
                             <div class="article-image">
@@ -255,7 +255,7 @@
                     } else {
                         card.innerHTML = `
                             <div class="article-image">
-                                <img src="${article.featured_image || 'images/default.jpg'}" alt="${article.title}">
+                                <img src="${article.featured_image || '/images/default.jpg'}" alt="${article.title}">
                             </div>
                             <div class="article-content">
                                 <h3 class="article-title">${article.title}</h3>
@@ -267,7 +267,6 @@
                     }
                 });
 
-                // Загрузка галереи
                 const galleryResponse = await fetch('/api/gallery');
                 const galleryItems = await galleryResponse.json();
                 const galleryGrid = document.getElementById('galleryGrid');
@@ -287,7 +286,6 @@
                     });
                 }
 
-                // Загрузка идей
                 const ideasResponse = await fetch('/api/ideas');
                 const ideas = await ideasResponse.json();
                 const ideasGrid = document.getElementById('ideasGrid');

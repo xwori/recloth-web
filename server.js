@@ -8,6 +8,8 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('view engine', 'ejs');
+
 // Настройка multer для загрузки изображений
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -172,6 +174,21 @@ app.get('/api/categories', async (req, res) => {
         console.error('Ошибка загрузки категорий:', err);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
+});
+
+// Страница выбора всех опросов
+app.get('/quizzes', (req, res) => {
+    res.render('quizzes');
+});
+
+// Страница с конкретной Google Формой
+app.get('/quiz-google', (req, res) => {
+    res.render('quiz-google');
+});
+
+// === ДОБАВЬ ЭТОТ МАРШРУТ ДЛЯ ТЕСТА С КАРТИНКАМИ ===
+app.get('/quiz-images', (req, res) => {
+    res.render('quiz-images');
 });
 
 // Отправить работу в галерею (с загрузкой фото)
