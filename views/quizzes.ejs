@@ -2,32 +2,72 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Опросы и Тесты — Recloth</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .quiz-selection { display: flex; gap: 20px; justify-content: center; padding: 50px; }
-        .quiz-card { border: 2px solid #e0e0e0; padding: 20px; border-radius: 20px; width: 300px; transition: 0.3s; }
-        .quiz-card:hover { border-color: #6200ee; transform: translateY(-5px); }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Опросы — Recloth</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
 </head>
 <body>
-    <div class="container" style="text-align: center;">
-        <h1>Наши опросы</h1>
-        <div class="quiz-selection">
-            <!-- Опрос 1 -->
-            <div class="quiz-card">
-                <h3>Общий опрос</h3>
-                <p>Google Форма: ваше мнение об апсайклинге</p>
-                <a href="/quiz-google" class="btn">Пройти</a>
-            </div>
-
-            <!-- Опрос 2 (Тот самый с картинками, сделаем его следующим) -->
-            <div class="quiz-card" style="opacity: 0.7;">
-                <h3>Тест по картинкам</h3>
-                <p>Скоро появится: кастомизация и стиль</p>
-                <a href="#" class="btn" style="background: gray;">В разработке</a>
+    <!-- Шапка как на главной -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo-link">
+                    <img src="/images/logotip.jpg" alt="Logo" class="logo">
+                </a>
+                <nav class="nav">
+                    <div class="nav-content">
+                        <a href="/" class="nav-link">Главная</a>
+                        <a href="/#about" class="nav-link">О проекте</a>
+                        <a href="/#articles" class="nav-link">Статьи</a>
+                        <a href="/quizzes" class="nav-link active">Опросы</a>
+                        <a href="/#gallery" class="nav-link">Галерея</a>
+                    </div>
+                </nav>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main style="margin-top: 120px; min-height: 80vh;">
+        <section class="about">
+            <div class="container">
+                <h2 class="section-title">Наши опросы</h2>
+                <p class="about-text" style="text-align: center; margin-bottom: 40px;">
+                    Твоё мнение помогает нам развивать эко-моду. Выбери подходящий тест ниже.
+                </p>
+
+                <div class="about-cards">
+                    <!-- Карточка Google Формы -->
+                    <div class="about-card fade-in visible">
+                        <div class="about-card-icon">📝</div>
+                        <h3 class="about-card-title">Общий опрос</h3>
+                        <p class="about-card-text">Твое мнение об апсайклинге и нашем проекте.</p>
+                        <a href="/quiz-google" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">Пройти</a>
+                    </div>
+
+                    <!-- Карточка Теста по картинкам -->
+                    <div class="about-card fade-in visible">
+                        <div class="about-card-icon">🎨</div>
+                        <h3 class="about-card-title">Тест по стилю</h3>
+                        <p class="about-card-text">Скоро: определи свой стиль кастомизации.</p>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 20px; display: inline-block; opacity: 0.6; cursor: not-allowed;">В разработке</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Подвал как на главной -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2026 Recloth</p>
+                <div class="footer-links">
+                    <a href="https://t.me/upcycling_recloth" target="_blank">t.me/upcycling_recloth</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
