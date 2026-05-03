@@ -176,6 +176,11 @@ app.get('/api/categories', async (req, res) => {
     }
 });
 
+
+// === ГЛАВНАЯ СТРАНИЦА ===
+app.get('/', (req, res) => {
+    res.render('index'); // Это заставит сервер показать файл views/index.ejs
+});
 // Страница выбора всех опросов
 app.get('/quizzes', (req, res) => {
     res.render('quizzes');
