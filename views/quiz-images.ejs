@@ -8,57 +8,74 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
     <style>
-        /* Фикс для высокой шапки */
-        .quiz-page-content {
-            padding-top: 280px; /* Тот же отступ, что и в quizzes.ejs */
-            min-height: 80vh;
+        /* Прижимаем футер к низу */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Высота на весь экран */
+            margin: 0;
+        }
+
+        /* Основной контент занимает всё свободное место */
+        .quiz-main-container {
+            flex: 1; 
+            padding-top: 300px; /* Отступ под твою высокую шапку */
+            padding-bottom: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .quiz-card {
-            background: #fff;
+            background: #ffffff;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             text-align: center;
             width: 100%;
-            max-width: 800px;
-            margin-bottom: 50px;
+            max-width: 700px;
+            border: 1px solid #eee;
+        }
+
+        .section-title {
+            color: #333;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             margin-top: 30px;
         }
 
         .option-btn {
-            padding: 20px;
+            padding: 18px;
             border: 2px solid #f0f0f0;
             border-radius: 12px;
-            background: none;
+            background: #fff;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            color: #333;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            color: #444;
         }
 
         .option-btn:hover {
             border-color: #D4AF37;
-            background: #fffdf5;
+            background: #fdfaf0;
+            transform: translateY(-2px);
         }
 
         .progress-bar {
             width: 100%;
-            max-width: 800px;
-            height: 6px;
-            background: #f0f0f0;
-            border-radius: 3px;
-            margin-bottom: 30px;
+            max-width: 700px;
+            height: 8px;
+            background: #eee;
+            border-radius: 10px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
 
@@ -66,13 +83,13 @@
             height: 100%;
             background: #D4AF37;
             width: 0%;
-            transition: width 0.5s ease;
+            transition: width 0.4s ease;
         }
 
         #result-screen { display: none; }
 
         @media (max-width: 768px) {
-            .quiz-page-content { padding-top: 200px; }
+            .quiz-main-container { padding-top: 220px; }
             .options-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -94,20 +111,22 @@
         </div>
     </header>
 
-    <main class="quiz-page-content container">
-        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <main class="quiz-main-container container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
         
         <!-- Экран вопроса -->
         <div id="question-screen" class="quiz-card">
-            <h2 id="question-text" class="section-title" style="font-size: 24px;">Загрузка...</h2>
+            <h2 id="question-text" class="section-title">Загрузка...</h2>
             <div class="options-grid" id="options"></div>
         </div>
 
         <!-- Экран результата -->
         <div id="result-screen" class="quiz-card">
-            <h2 class="section-title">Ваш результат</h2>
-            <p id="result-text" class="about-text" style="font-size: 20px; margin: 20px 0;"></p>
-            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 12px 30px; display: inline-block; color: white; border-radius: 5px; text-decoration: none;">Вернуться к опросам</a>
+            <h2 class="section-title">Тест завершен!</h2>
+            <p id="result-text" style="font-size: 20px; margin: 25px 0; font-family: 'Inter', sans-serif;"></p>
+            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 12px 35px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Вернуться к опросам</a>
         </div>
     </main>
 
@@ -123,73 +142,79 @@
     </footer>
 
     <script>
-        const questions = [
-            {
-                q: "ЧТО ОЗНАЧАЕТ ТЕРМИН «АПСАЙКЛИНГ»?",
-                options: ["УТИЛИЗАЦИЯ МУСОРА", "ПОВТОРНОЕ ИСПОЛЬЗОВАНИЕ ВЕЩЕЙ С УЛУЧШЕНИЕМ ИХ КАЧЕСТВА", "СЖИГАНИЕ ОТХОДОВ", "СКЛАДИРОВАНИЕ МУСОРА"],
-                correct: 1
-            },
-            {
-                q: "ЧЕМ АПСАЙКЛИНГ ОТЛИЧАЕТСЯ ОТ ПЕРЕРАБОТКИ?",
-                options: ["НИЧЕМ НЕ ОТЛИЧАЕТСЯ", "ПРИ АПСАЙКЛИНГЕ ВЕЩЬ ИСПОЛЬЗУЕТСЯ БЕЗ ИЗМЕНЕНИЙ", "ПРИ АПСАЙКЛИНГЕ СОЗДАЁТСЯ НОВАЯ ВЕЩЬ С БОЛЬШЕЙ ЦЕННОСТЬЮ", "ПЕРЕРАБОТКА ВСЕГДА ДОРОЖЕ"],
-                correct: 2
-            },
-            {
-                q: "ЧТО ИЗ ПЕРЕЧИСЛЕННОГО ЯВЛЯЕТСЯ ПРИМЕРОМ АПСАЙКЛИНГА?",
-                options: ["ВЫБРОС СТАРОЙ ОДЕЖДЫ", "ПЕРЕРАБОТКА ПЛАСТИКА НА ЗАВОДЕ", "СОЗДАНИЕ СУМКИ ИЗ СТАРЫХ ДЖИНСОВ", "СЖИГАНИЕ БУМАГИ"],
-                correct: 2
-            },
-            {
-                q: "ЗАЧЕМ НУЖЕН АПСАЙКЛИНГ?",
-                options: ["ЧТОБЫ УВЕЛИЧИТЬ КОЛИЧЕСТВО ОТХОДОВ", "ЧТОБЫ ЭКОНОМИТЬ РЕСУРСЫ И УМЕНЬШАТЬ МУСОР", "ЧТОБЫ УСКОРИТЬ ПРОИЗВОДСТВО", "ЧТОБЫ УПРОСТИТЬ УТИЛИЗАЦИЮ"],
-                correct: 1
-            },
-            {
-                q: "ЧТО ЧАЩЕ ВСЕГО ИСПОЛЬЗУЮТ ДЛЯ АПСАЙКЛИНГА?",
-                options: ["ТОЛЬКО НОВЫЕ МАТЕРИАЛЫ", "СТАРЫЕ ИЛИ НЕНУЖНЫЕ ВЕЩИ", "ТОЛЬКО ПЛАСТИК", "ТОЛЬКО СТЕКЛО"],
-                correct: 1
+        // Код теста без лишних пометок
+        document.addEventListener('DOMContentLoaded', function() {
+            const questions = [
+                {
+                    q: "ЧТО ОЗНАЧАЕТ ТЕРМИН «АПСАЙКЛИНГ»?",
+                    options: ["УТИЛИЗАЦИЯ МУСОРА", "ПОВТОРНОЕ ИСПОЛЬЗОВАНИЕ ВЕЩЕЙ С УЛУЧШЕНИЕМ ИХ КАЧЕСТВА", "СЖИГАНИЕ ОТХОДОВ", "СКЛАДИРОВАНИЕ МУСОРА"],
+                    correct: 1
+                },
+                {
+                    q: "ЧЕМ АПСАЙКЛИНГ ОТЛИЧАЕТСЯ ОТ ПЕРЕРАБОТКИ?",
+                    options: ["НИЧЕМ НЕ ОТЛИЧАЕТСЯ", "ПРИ АПСАЙКЛИНГЕ ВЕЩЬ ИСПОЛЬЗУЕТСЯ БЕЗ ИЗМЕНЕНИЙ", "ПРИ АПСАЙКЛИНГЕ СОЗДАЁТСЯ НОВАЯ ВЕЩЬ С БОЛЬШЕЙ ЦЕННОСТЬЮ", "ПЕРЕРАБОТКА ВСЕГДА ДОРОЖЕ"],
+                    correct: 2
+                },
+                {
+                    q: "ЧТО ИЗ ПЕРЕЧИСЛЕННОГО ЯВЛЯЕТСЯ ПРИМЕРОМ АПСАЙКЛИНГА?",
+                    options: ["ВЫБРОС СТАРОЙ ОДЕЖДЫ", "ПЕРЕРАБОТКА ПЛАСТИКА НА ЗАВОДЕ", "СОЗДАНИЕ СУМКИ ИЗ СТАРЫХ ДЖИНСОВ", "СЖИГАНИЕ БУМАГИ"],
+                    correct: 2
+                },
+                {
+                    q: "ЗАЧЕМ НУЖЕН АПСАЙКЛИНГ?",
+                    options: ["ЧТОБЫ УВЕЛИЧИТЬ КОЛИЧЕСТВО ОТХОДОВ", "ЧТОБЫ ЭКОНОМИТЬ РЕСУРСЫ И УМЕНЬШАТЬ МУСОР", "ЧТОБЫ УСКОРИТЬ ПРОИЗВОДСТВО", "ЧТОБЫ УПРОСТИТЬ УТИЛИЗАЦИЮ"],
+                    correct: 1
+                },
+                {
+                    q: "ЧТО ЧАЩЕ ВСЕГО ИСПОЛЬЗУЮТ ДЛЯ АПСАЙКЛИНГА?",
+                    options: ["ТОЛЬКО НОВЫЕ МАТЕРИАЛЫ", "СТАРЫЕ ИЛИ НЕНУЖНЫЕ ВЕЩИ", "ТОЛЬКО ПЛАСТИК", "ТОЛЬКО СТЕКЛО"],
+                    correct: 1
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+
+            function showQuestion() {
+                const q = questions[currentIdx];
+                document.getElementById('question-text').innerText = q.q;
+                const optionsDiv = document.getElementById('options');
+                optionsDiv.innerHTML = '';
+                
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(i);
+                    optionsDiv.appendChild(btn);
+                });
+                
+                const progressPercent = (currentIdx / questions.length) * 100;
+                document.getElementById('progress').style.width = progressPercent + '%';
             }
-        ];[cite: 2]
 
-        let currentIdx = 0;
-        let score = 0;
-
-        function showQuestion() {
-            const q = questions[currentIdx];
-            document.getElementById('question-text').innerText = q.q;
-            const optionsDiv = document.getElementById('options');
-            optionsDiv.innerHTML = '';
-            
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(i);
-                optionsDiv.appendChild(btn);
-            });
-            
-            document.getElementById('progress').style.width = `${(currentIdx / questions.length) * 100}%`;
-        }
-
-        function checkAnswer(idx) {
-            if (idx === questions[currentIdx].correct) score++;
-            currentIdx++;
-            if (currentIdx < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
+            function checkAnswer(idx) {
+                if (idx === questions[currentIdx].correct) {
+                    score++;
+                }
+                currentIdx++;
+                if (currentIdx < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
             }
-        }
 
-        function showResult() {
-            document.getElementById('question-screen').style.display = 'none';
-            document.getElementById('progress').style.width = '100%';
-            const resultScreen = document.getElementById('result-screen');
-            resultScreen.style.display = 'block';
-            document.getElementById('result-text').innerText = `Твой результат: ${score} из ${questions.length}`;
-        }
+            function showResult() {
+                document.getElementById('question-screen').style.display = 'none';
+                document.getElementById('progress').style.width = '100%';
+                const resultScreen = document.getElementById('result-screen');
+                resultScreen.style.display = 'block';
+                document.getElementById('result-text').innerText = 'Твой результат: ' + score + ' из ' + questions.length;
+            }
 
-        showQuestion();
+            showQuestion();
+        });
     </script>
 </body>
 </html>
