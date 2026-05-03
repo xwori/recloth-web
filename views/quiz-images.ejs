@@ -8,19 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
     <style>
-        /* Базовая структура для прижатия футера */
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
+            background-color: #f8f9fa;
         }
 
-        /* УВЕЛИЧЕННЫЙ ОТСТУП ОТ ШАПКИ */
-        .quiz-main-container {
-            flex: 1; 
-            padding-top: 450px; /* Значительно увеличили отступ, чтобы уйти из-под шапки */
-            padding-bottom: 80px;
+        /* Оптимальный отступ, чтобы контент был виден под шапкой */
+        .quiz-wrapper {
+            flex: 1;
+            padding-top: 380px; 
+            padding-bottom: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,52 +30,52 @@
             background: #ffffff;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
             text-align: center;
-            width: 100%;
-            max-width: 800px;
-            border: 1px solid #eee;
+            width: 90%;
+            max-width: 700px;
+            border: 1px solid #eaeaea;
         }
 
         .section-title {
-            color: #333;
-            margin-bottom: 25px;
+            color: #2c3e50;
+            margin-bottom: 20px;
             font-family: 'Playfair Display', serif;
-            font-size: 28px;
+            font-size: 26px;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .option-btn {
-            padding: 18px;
-            border: 2px solid #f0f0f0;
-            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid #edf2f7;
+            border-radius: 10px;
             background: #fff;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             transition: all 0.2s ease;
             font-size: 15px;
-            color: #444;
+            color: #4a5568;
         }
 
         .option-btn:hover {
             border-color: #D4AF37;
-            background: #fdfaf0;
+            background: #fffcf0;
             transform: translateY(-2px);
         }
 
         .progress-bar {
-            width: 100%;
-            max-width: 800px;
-            height: 8px;
-            background: #eee;
-            border-radius: 10px;
-            margin-bottom: 25px;
+            width: 90%;
+            max-width: 700px;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            margin-bottom: 20px;
             overflow: hidden;
         }
 
@@ -88,17 +88,10 @@
 
         #result-screen { display: none; }
 
-        /* Адаптивность для мобильных устройств */
         @media (max-width: 768px) {
-            .quiz-main-container { 
-                padding-top: 250px; /* На мобилках шапка обычно меньше */
-            }
-            .options-grid { 
-                grid-template-columns: 1fr; 
-            }
-            .section-title {
-                font-size: 22px;
-            }
+            .quiz-wrapper { padding-top: 220px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .quiz-card { padding: 25px; }
         }
     </style>
 </head>
@@ -119,22 +112,20 @@
         </div>
     </header>
 
-    <main class="quiz-main-container container">
+    <main class="quiz-wrapper container">
         <div class="progress-bar">
             <div class="progress-fill" id="progress"></div>
         </div>
         
-        <!-- Экран вопроса -->
         <div id="question-screen" class="quiz-card">
-            <h2 id="question-text" class="section-title">Загрузка...</h2>
+            <h2 id="question-text" class="section-title">Инициализация...</h2>
             <div class="options-grid" id="options"></div>
         </div>
 
-        <!-- Экран результата -->
         <div id="result-screen" class="quiz-card">
-            <h2 class="section-title">Тест завершен!</h2>
-            <p id="result-text" style="font-size: 20px; margin: 25px 0; font-family: 'Inter', sans-serif;"></p>
-            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 12px 35px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Вернуться к опросам</a>
+            <h2 class="section-title">Готово!</h2>
+            <p id="result-text" style="font-size: 22px; margin: 25px 0; font-family: 'Inter', sans-serif; color: #2d3748;"></p>
+            <a href="/quizzes" class="btn btn-primary" style="background: #D4AF37; border: none; padding: 14px 40px; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">К другим опросам</a>
         </div>
     </main>
 
@@ -151,7 +142,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const questions = [
+            const quizData = [
                 {
                     q: "ЧТО ОЗНАЧАЕТ ТЕРМИН «АПСАЙКЛИНГ»?",
                     options: ["УТИЛИЗАЦИЯ МУСОРА", "ПОВТОРНОЕ ИСПОЛЬЗОВАНИЕ ВЕЩЕЙ С УЛУЧШЕНИЕМ ИХ КАЧЕСТВА", "СЖИГАНИЕ ОТХОДОВ", "СКЛАДИРОВАНИЕ МУСОРА"],
@@ -177,50 +168,50 @@
                     options: ["ТОЛЬКО НОВЫЕ МАТЕРИАЛЫ", "СТАРЫЕ ИЛИ НЕНУЖНЫЕ ВЕЩИ", "ТОЛЬКО ПЛАСТИК", "ТОЛЬКО СТЕКЛО"],
                     correct: 1
                 }
-            ];[cite: 2]
+            ];
 
-            let currentIdx = 0;
+            let index = 0;
             let score = 0;
 
-            function showQuestion() {
-                const q = questions[currentIdx];
-                document.getElementById('question-text').innerText = q.q;
-                const optionsDiv = document.getElementById('options');
-                optionsDiv.innerHTML = '';
+            function renderQuestion() {
+                const current = quizData[index];
+                document.getElementById('question-text').innerText = current.q;
+                const optionsBox = document.getElementById('options');
+                optionsBox.innerHTML = '';
                 
-                q.options.forEach((opt, i) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.innerText = opt;
-                    btn.onclick = () => checkAnswer(i);
-                    optionsDiv.appendChild(btn);
+                current.options.forEach((text, i) => {
+                    const button = document.createElement('button');
+                    button.className = 'option-btn';
+                    button.innerText = text;
+                    button.onclick = () => handleChoice(i);
+                    optionsBox.appendChild(button);
                 });
                 
-                const progressPercent = (currentIdx / questions.length) * 100;
-                document.getElementById('progress').style.width = progressPercent + '%';
+                const progressValue = (index / quizData.length) * 100;
+                document.getElementById('progress').style.width = progressValue + '%';
             }
 
-            function checkAnswer(idx) {
-                if (idx === questions[currentIdx].correct) {
+            function handleChoice(choice) {
+                if (choice === quizData[index].correct) {
                     score++;
                 }
-                currentIdx++;
-                if (currentIdx < questions.length) {
-                    showQuestion();
+                index++;
+                if (index < quizData.length) {
+                    renderQuestion();
                 } else {
-                    showResult();
+                    finishQuiz();
                 }
             }
 
-            function showResult() {
+            function finishQuiz() {
                 document.getElementById('question-screen').style.display = 'none';
                 document.getElementById('progress').style.width = '100%';
-                const resultScreen = document.getElementById('result-screen');
-                resultScreen.style.display = 'block';
-                document.getElementById('result-text').innerText = 'Твой результат: ' + score + ' из ' + questions.length;
+                const resultBox = document.getElementById('result-screen');
+                resultBox.style.display = 'block';
+                document.getElementById('result-text').innerText = 'Ты набрал ' + score + ' очков из ' + quizData.length + '!';
             }
 
-            showQuestion();
+            renderQuestion();
         });
     </script>
 </body>
