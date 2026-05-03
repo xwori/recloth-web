@@ -7,9 +7,34 @@
     <link rel="stylesheet" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/logotip.jpg" sizes="32x32">
+    <style>
+        /* Специальный отступ для страниц с фиксированной шапкой Recloth */
+        .page-content {
+            padding-top: 280px; /* Увеличили, чтобы текст не залезал под лого и меню */
+            min-height: 80vh;
+        }
+        @media (max-width: 768px) {
+            .page-content {
+                padding-top: 200px; /* Чуть меньше для мобилок */
+            }
+        }
+        /* Центрируем заголовок и добавляем черту как на главной */
+        .quizzes-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        .quizzes-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: #D4AF37; /* Твой золотистый цвет */
+            margin: 15px auto 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Шапка как на главной -->
     <header class="header">
         <div class="container">
             <div class="header-content">
@@ -21,7 +46,7 @@
                         <a href="/" class="nav-link">Главная</a>
                         <a href="/#about" class="nav-link">О проекте</a>
                         <a href="/#articles" class="nav-link">Статьи</a>
-                        <a href="/quizzes" class="nav-link active">Опросы</a>
+                        <a href="/quizzes" class="nav-link">Опросы</a>
                         <a href="/#gallery" class="nav-link">Галерея</a>
                     </div>
                 </nav>
@@ -29,36 +54,40 @@
         </div>
     </header>
 
-    <main style="margin-top: 120px; min-height: 80vh;">
+    <!-- Обернули в специальный класс для отступа -->
+    <main class="page-content">
         <section class="about">
             <div class="container">
-                <h2 class="section-title">Наши опросы</h2>
-                <p class="about-text" style="text-align: center; margin-bottom: 40px;">
+                <h2 class="section-title quizzes-title">Наши опросы</h2>
+                <p class="about-text" style="text-align: center; margin-bottom: 60px;">
                     Твоё мнение помогает нам развивать эко-моду. Выбери подходящий тест ниже.
                 </p>
 
                 <div class="about-cards">
-                    <!-- Карточка Google Формы -->
+                    <!-- Карточка 1 -->
                     <div class="about-card fade-in visible">
-                        <div class="about-card-icon">📝</div>
+                        <div class="about-card-icon">
+                             <img src="https://img.icons8.com/color/96/test-passed.png" alt="icon" style="width: 80px;">
+                        </div>
                         <h3 class="about-card-title">Общий опрос</h3>
                         <p class="about-card-text">Твое мнение об апсайклинге и нашем проекте.</p>
-                        <a href="/quiz-google" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">Пройти</a>
+                        <a href="/quiz-google" class="btn btn-primary" style="margin-top: 25px; display: inline-block; background-color: #D4AF37; border: none;">Пройти</a>
                     </div>
 
-                    <!-- Карточка Теста по картинкам -->
+                    <!-- Карточка 2 -->
                     <div class="about-card fade-in visible">
-                        <div class="about-card-icon">🎨</div>
+                        <div class="about-card-icon">
+                            <img src="https://img.icons8.com/color/96/palette.png" alt="icon" style="width: 80px;">
+                        </div>
                         <h3 class="about-card-title">Тест по стилю</h3>
                         <p class="about-card-text">Скоро: определи свой стиль кастомизации.</p>
-                        <a href="#" class="btn btn-secondary" style="margin-top: 20px; display: inline-block; opacity: 0.6; cursor: not-allowed;">В разработке</a>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 25px; display: inline-block; opacity: 0.6; cursor: not-allowed;">В разработке</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Подвал как на главной -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
