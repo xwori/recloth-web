@@ -196,6 +196,11 @@ app.get('/quiz-images', (req, res) => {
     res.render('quiz-images');
 });
 
+// Маршрут для страницы статьи
+app.get('/article', (req, res) => {
+    res.render('article'); // Это заставит сервер искать файл views/article.ejs
+});
+
 // Отправить работу в галерею (с загрузкой фото)
 app.post('/api/gallery', upload.single('photo'), async (req, res) => {
     try {
@@ -250,6 +255,12 @@ app.post('/api/gallery/:id/like', async (req, res) => {
         console.error('Ошибка лайка:', err);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
+});
+
+// Если кто-то все же перейдет по старой ссылке index.html, 
+// сервер просто перенаправит его на главную
+app.get('/index.html', (req, res) => {
+    res.redirect('/');
 });
 
 // Запуск сервера
