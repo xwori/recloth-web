@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Базовые настройки страницы */
+        /* Твои базовые настройки страницы */
         .article-page { 
             padding-top: 250px; 
             padding-bottom: 80px; 
@@ -23,9 +23,9 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            /* ФИКС: Поднимаем контейнер выше невидимых слоев шапки, чтобы плеер кликался */
+            /* ФИКС КЛИКАБЕЛЬНОСТИ: Контейнер над всем остальным */
             position: relative;
-            z-index: 5;
+            z-index: 10;
         }
         
         .btn-back-custom {
@@ -48,13 +48,15 @@
         .post-meta { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee; }
         .post-meta span { background: #f8f9fa; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.9rem; font-family: 'Inter', sans-serif; }
 
-        /* Контейнер для главного медиа (фото или видео) */
+        /* Контейнер для главного медиа */
         .main-media-box {
             margin: 0 auto 30px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             background: #000;
+            position: relative; /* Чтобы видео работало */
+            z-index: 20;
         }
         
         .main-media-box video, .main-media-box img {
@@ -62,12 +64,13 @@
             width: 100%;
             max-height: 550px;
             object-fit: cover;
+            pointer-events: auto; /* Жестко разрешаем клики по видео */
         }
 
         .post-content { line-height: 1.8; font-size: 1.15rem; font-family: 'Inter', sans-serif; color: #333; }
         .post-content p { margin-bottom: 1.5rem; }
 
-        /* Твоя сетка картинок */
+        /* Твоя оригинальная сетка картинок */
         .img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 40px 0; }
         .img-grid img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 15px; cursor: pointer; transition: transform 0.3s ease; }
         .img-grid img:hover { transform: scale(1.03); }
@@ -82,10 +85,9 @@
     </style>
 </head>
 <body>
-    <header class="header" style="z-index: 1000;">
+    <header class="header" style="z-index: 100;">
         <div class="container">
             <div class="header-content">
-                <!-- Ссылка на / вместо index.html -->
                 <a href="/" class="logo-link">
                     <img src="/images/logotip.jpg" alt="Logo" class="logo">
                 </a>
@@ -108,7 +110,7 @@
         </div>
     </main>
 
-    <!-- Модалка для просмотра фото[cite: 8] -->
+    <!-- Твоя модалка -->
     <div class="modal" id="galleryModal" onclick="closeModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; align-items:center; justify-content:center;">
         <img src="" id="modalImage" style="max-width:90%; max-height:90%; border-radius:10px;">
     </div>
@@ -121,18 +123,19 @@
             if (!slug) return window.location.href = '/';
             
             try {
-                // Запрос к API за данными из базы[cite: 8]
+                // Запрос к API
                 const response = await fetch(`/api/articles/${slug}`);
                 const article = await response.json();
                 
                 document.title = `${article.title} — Recloth`;
                 
-                // 1. ЛОГИКА МЕДИА: Видео или Главное фото[cite: 8]
+                // 1. ЛОГИКА МЕДИА: Видео или Главное фото
+                // Выводим видео напрямую, без лишних оберток, чтобы точно нажималось
                 let mediaHtml = '';
                 if (article.video_url) {
                     mediaHtml = `
                         <div class="main-media-box">
-                            <video controls poster="${article.featured_image || ''}" style="pointer-events: auto;">
+                            <video controls poster="${article.featured_image || ''}">
                                 <source src="${article.video_url}" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
@@ -146,7 +149,8 @@
                     `;
                 }
 
-                // 2. ДОПОЛНИТЕЛЬНЫЕ ИЗОБРАЖЕНИЯ (Сетка)[cite: 8]
+                // 2. ДОПОЛНИТЕЛЬНЫЕ ИЗОБРАЖЕНИЯ (Сетка)
+                // Вот этот блок возвращает все твои фотки из базы!
                 let imagesHtml = '';
                 if (article.images && article.images.length > 0) {
                     imagesHtml = `
@@ -160,7 +164,7 @@
                 
                 const difficultyMap = { 'easy': 'Легко', 'medium': 'Средне', 'hard': 'Сложно' };
                 
-                // 3. ФОРМИРОВАНИЕ СТРАНИЦЫ[cite: 8]
+                // 3. ФОРМИРОВАНИЕ СТРАНИЦЫ
                 const html = `
                     <h1 class="post-title">${article.title}</h1>
                     <div class="post-meta">

@@ -18,12 +18,12 @@
     <header class="header" id="header">
         <div class="container">
             <div class="header-content">
-                <a href="/" class="logo-link">
+                <a href="#hero" class="logo-link">
                     <img src="/images/logotip.jpg" alt="Recloth virtual stylist" class="logo">
                 </a>
                 <nav class="nav" id="nav">
                     <div class="nav-content">
-                        <a href="/" class="nav-link">Главная</a>
+                        <a href="#hero" class="nav-link">Главная</a>
                         <a href="#about" class="nav-link">О проекте</a>
                         <a href="#articles" class="nav-link">Статьи</a>
                         <a href="#video-lessons" class="nav-link">Видео</a> 
@@ -61,7 +61,7 @@
             <div class="about-content">
                 <p class="about-text">
                     Recloth — сообщество для апсайклинга. Мы показываем, как превратить старую футболку в сумку, 
-                    джинсы в шорты с аппликацией или пальто в стильный жакет. Экономь, твори, береги планету![cite: 4]
+                    джинсы в шорты с аппликацией или пальто в стильный жакет. Экономь, твори, береги планету!
                 </p>
                 <div class="about-cards">
                     <div class="about-card fade-in">
@@ -170,13 +170,17 @@
             <h2 class="section-title">Контакты</h2>
             <div class="contacts-content">
                 <div class="contacts-list">
-                    <a href="https://t.me/upcycling_recloth" class="contact-item" target="_blank">
+                    <a href="https://t.me/upcycling_recloth" class="contact-item" target="_blank" rel="noopener">
                         <span class="contact-icon">📢</span>
                         <span class="contact-text">Telegram канал: t.me/upcycling_recloth</span>
                     </a>
-                    <a href="https://t.me/TexelReclothBot" class="contact-item" target="_blank">
+                    <a href="https://t.me/TexelReclothBot" class="contact-item" target="_blank" rel="noopener">
                         <span class="contact-icon">🤖</span>
                         <span class="contact-text">AI-бот: @TexelReclothBot</span>
+                    </a>
+                    <a href="https://instagram.com/recloth" class="contact-item" target="_blank" rel="noopener">
+                        <span class="contact-icon">📸</span>
+                        <span class="contact-text">Instagram: @recloth</span>
                     </a>
                     <a href="mailto:hello@recloth.ru" class="contact-item">
                         <span class="contact-icon">✉️</span>
@@ -186,6 +190,7 @@
                 <div class="contacts-map">
                     <div class="map-placeholder">
                         <p>🗺️ Москва</p>
+                        <p class="map-note">Yandex Maps</p>
                     </div>
                 </div>
             </div>
@@ -196,6 +201,10 @@
         <div class="container">
             <div class="footer-content">
                 <p class="footer-text">© 2026 Recloth</p>
+                <div class="footer-links">
+                    <a href="https://t.me/upcycling_recloth" target="_blank" rel="noopener">t.me/upcycling_recloth</a>
+                    <a href="https://t.me/TexelReclothBot" target="_blank" rel="noopener">@TexelReclothBot</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -204,6 +213,7 @@
         <div class="modal-content">
             <span class="modal-close" id="modalClose">&times;</span>
             <img src="" alt="" id="modalImage">
+            <a href="#articles" class="modal-link">Подробнее в статье</a>
         </div>
     </div>
 
@@ -213,7 +223,6 @@
     <script>
         async function loadContent() {
             try {
-                // Загружаем статьи и видео из базы
                 const response = await fetch('/api/articles');
                 const articles = await response.json();
                 
@@ -227,10 +236,17 @@
                     const card = document.createElement('article');
                     card.className = 'article-card fade-in visible';
                     
-                    // ГЛАВНОЕ: Используем картинку-заглушку для всех видео на главной[cite: 7]
-                    const previewImage = article.featured_image || '/images/default.jpg';
+                    // Умный поиск картинки: сначала featured, потом первая из галереи, потом заглушка
+                    let previewImage = '/images/default.jpg';
+                    if (article.featured_image) {
+                        previewImage = article.featured_image;
+                    } else if (article.images && article.images.length > 0) {
+                        previewImage = article.images[0].image_url;
+                    }
+                    
                     const articleLink = `/article?slug=${article.slug}`;
 
+                    // Генерируем карточку: всегда картинка, никогда не видео на главной
                     card.innerHTML = `
                         <div class="article-image">
                             <img src="${previewImage}" alt="${article.title}">
@@ -244,7 +260,7 @@
                         </div>
                     `;
 
-                    // Распределяем по сеткам[cite: 7]
+                    // Распределяем карточки
                     if (article.video_url && videoGrid) {
                         videoGrid.appendChild(card);
                     } else if (articlesGrid) {
@@ -252,24 +268,29 @@
                     }
                 });
 
-                // Галерея[cite: 7]
                 const galleryResponse = await fetch('/api/gallery');
                 const galleryItems = await galleryResponse.json();
                 const galleryGrid = document.getElementById('galleryGrid');
+                
                 if (galleryGrid) {
                     galleryGrid.innerHTML = '';
                     galleryItems.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'gallery-item fade-in visible';
-                        div.innerHTML = `<img src="${item.image_url}" alt="${item.title}" onclick="openModal(this.src)">`;
+                        div.innerHTML = `
+                            <img src="${item.image_url}" alt="${item.title}" onclick="openModal(this.src)">
+                            <div class="gallery-overlay">
+                                <a href="#articles" class="gallery-link">Подробнее →</a>
+                            </div>
+                        `;
                         galleryGrid.appendChild(div);
                     });
                 }
 
-                // Идеи трансформаций[cite: 7]
                 const ideasResponse = await fetch('/api/ideas');
                 const ideas = await ideasResponse.json();
                 const ideasGrid = document.getElementById('ideasGrid');
+                
                 if (ideasGrid) {
                     ideasGrid.innerHTML = '';
                     ideas.forEach(idea => {
@@ -277,13 +298,20 @@
                         div.className = 'idea-card fade-in visible';
                         div.innerHTML = `
                             <div class="idea-images">
-                                <div class="idea-before"><img src="${idea.image_before || ''}"><span class="idea-label">ДО</span></div>
+                                <div class="idea-before">
+                                    <img src="${idea.image_before || ''}" alt="До">
+                                    <span class="idea-label">ДО</span>
+                                </div>
                                 <div class="idea-arrow">→</div>
-                                <div class="idea-after"><img src="${idea.image_after || ''}"><span class="idea-label">ПОСЛЕ</span></div>
+                                <div class="idea-after">
+                                    <img src="${idea.image_after || ''}" alt="После">
+                                    <span class="idea-label">ПОСЛЕ</span>
+                                </div>
                             </div>
                             <div class="idea-content">
                                 <h3 class="idea-title">${idea.title}</h3>
-                                <a href="/article?slug=${idea.slug || ''}" class="idea-link">Подробнее →</a>
+                                <p class="idea-materials">Материалы: ${idea.materials.map(m => m.name).join(', ')}</p>
+                                <a href="#articles" class="idea-link">Подробнее в статье</a>
                             </div>
                         `;
                         ideasGrid.appendChild(div);
