@@ -260,7 +260,7 @@
                             <div class="article-content">
                                 <h3 class="article-title">${article.title}</h3>
                                 <p class="article-excerpt">${article.excerpt}</p>
-                                <a href="/api/articles/${article.slug}" class="article-link">Читать полностью →</a>
+                                <a href="/article?slug=${article.slug}" class="article-link">Читать полностью →</a>
                             </div>
                         `;
                         if (articlesGrid) articlesGrid.appendChild(card);
