@@ -6,7 +6,6 @@
     <meta name="description" content="Идеи апсайклинга, статьи, мастер-классы по обновлению одежды. Recloth — сообщество для переработки и обновления старой одежды.">
     <meta name="theme-color" content="#F8F9FA">
     <title>Recloth — Усовершенствуй старую одежду | Upcycling идеи</title>
-    <!-- Исправленные пути к статике -->
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +47,6 @@
                 <h2 class="hero-subtitle">Обнови, добавь, создай уникальное. Эко-мода своими руками.</h2>
                 <div class="hero-buttons">
                     <a href="#ideas" class="btn btn-primary">Смотреть идеи</a>
-                    <a href="/quizzes" class="btn btn-secondary" style="background: #6200ee; color: white; border: none;">Пройти тест</a>
                     <a href="#video-lessons" class="btn btn-secondary">Смотреть видео</a>
                 </div>
             </div>
@@ -217,7 +215,6 @@
         </div>
     </div>
 
-    <!-- Ссылка на внешний скрипт -->
     <script src="/script.js"></script>
 
     <script>
@@ -236,35 +233,32 @@
                     const card = document.createElement('article');
                     card.className = 'article-card fade-in visible';
                     
-                    // Умный поиск картинки: сначала featured, потом первая из галереи, потом заглушка
-                    let previewImage = '/images/default.jpg';
-                    if (article.featured_image) {
-                        previewImage = article.featured_image;
-                    } else if (article.images && article.images.length > 0) {
-                        previewImage = article.images[0].image_url;
-                    }
-                    
-                    const articleLink = `/article?slug=${article.slug}`;
-
-                    // Генерируем карточку: всегда картинка, никогда не видео на главной
-                    card.innerHTML = `
-                        <div class="article-image">
-                            <img src="${previewImage}" alt="${article.title}">
-                        </div>
-                        <div class="article-content">
-                            <h3 class="article-title">${article.title}</h3>
-                            <p class="article-excerpt">${article.excerpt}</p>
-                            <a href="${articleLink}" class="article-link">
-                                ${article.video_url ? 'Смотреть детали →' : 'Читать полностью →'}
-                            </a>
-                        </div>
-                    `;
-
-                    // Распределяем карточки
-                    if (article.video_url && videoGrid) {
-                        videoGrid.appendChild(card);
-                    } else if (articlesGrid) {
-                        articlesGrid.appendChild(card);
+                    if (article.video_url) {
+                        card.innerHTML = `
+                            <div class="article-image">
+                                <video width="100%" poster="${article.featured_image || ''}" controls style="display:block">
+                                    <source src="${article.video_url}" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">${article.title}</h3>
+                                <p class="article-excerpt">${article.excerpt}</p>
+                                <a href="/article?slug=${article.slug}" class="article-link">Смотреть детали →</a>
+                            </div>
+                        `;
+                        if (videoGrid) videoGrid.appendChild(card);
+                    } else {
+                        card.innerHTML = `
+                            <div class="article-image">
+                                <img src="${article.featured_image || '/images/default.jpg'}" alt="${article.title}">
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">${article.title}</h3>
+                                <p class="article-excerpt">${article.excerpt}</p>
+                                <a href="/article?slug=${article.slug}" class="article-link">Читать полностью →</a>
+                            </div>
+                        `;
+                        if (articlesGrid) articlesGrid.appendChild(card);
                     }
                 });
 
