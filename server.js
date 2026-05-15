@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
 const pool = require('./db');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 const app = express();
@@ -262,9 +263,7 @@ app.post('/api/gallery/:id/like', async (req, res) => {
 app.get('/index.html', (req, res) => {
     res.redirect('/');
 });
-// === ДОБАВЬ ЭТО В НАЧАЛО ФАЙЛА (где все require) ===
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const fs = require('fs');
+
 
 // === ДОБАВЬ ЭТО В РАЗДЕЛ С API МАРШРУТАМИ ===
 // Инициализация ИИ
