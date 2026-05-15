@@ -262,7 +262,58 @@ app.post('/api/gallery/:id/like', async (req, res) => {
 app.get('/index.html', (req, res) => {
     res.redirect('/');
 });
+// === ДОБАВЬ ЭТО В НАЧАЛО ФАЙЛА (где все require) ===
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const fs = require('fs');
 
+// === ДОБАВЬ ЭТО В РАЗДЕЛ С API МАРШРУТАМИ ===
+// Инициализация ИИ
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Страница для нашего ИИ-советника
+app.get('/ai-advisor', (req, res) => {
+    res.render('ai-advisor'); // Создадим этот файл на следующем шаге
+});
+
+// API для обработки фото нейросетью
+app.post('/api/analyze-photo', upload.single('photo'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Пожалуйста, загрузите фото вещи' });
+        }
+
+        // Подготавливаем картинку для ИИ
+        function fileToGenerativePart(filePath, mimeType) {
+            return {
+                inlineData: {
+                    data: Buffer.from(fs.readFileSync(filePath)).toString("base64"),
+                    mimeType
+                },
+            };
+        }
+        const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
+
+        // Используем быструю модель с поддержкой зрения
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        // Даем ИИ жесткую установку, кто он такой
+        const prompt = "Ты — профессиональный эко-стилист и эксперт по апсайклингу. Посмотри на фотографию этой вещи/ткани. Предложи 3 конкретные, креативные и стильные идеи, как переделать эту вещь, чтобы дать ей вторую жизнь и не выбрасывать. Опиши идеи коротко, вдохновляюще и структурировано (по пунктам). Пиши на русском языке.";
+
+        // Отправляем запрос
+        const result = await model.generateContent([prompt, imagePart]);
+        const responseText = result.response.text();
+
+        // Удаляем фотку с сервера, чтобы она не занимала место (ИИ её уже посмотрел)
+        fs.unlinkSync(req.file.path);
+
+        res.json({ advice: responseText });
+    } catch (err) {
+        console.error('Ошибка ИИ:', err);
+        // Если фотка осталась при ошибке - удаляем
+        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        res.status(500).json({ error: 'ИИ сейчас отдыхает, попробуйте позже.' });
+    }
+});
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);
