@@ -274,45 +274,50 @@ app.get('/ai-advisor', (req, res) => {
     res.render('ai-advisor'); // Создадим этот файл на следующем шаге
 });
 
-// API для обработки фото нейросетью
+// API для текстового чата и фото ИИ
 app.post('/api/analyze-photo', upload.single('photo'), async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'Пожалуйста, загрузите фото вещи' });
-        }
-
-        // Подготавливаем картинку для ИИ
-        function fileToGenerativePart(filePath, mimeType) {
-            return {
-                inlineData: {
-                    data: Buffer.from(fs.readFileSync(filePath)).toString("base64"),
-                    mimeType
-                },
-            };
-        }
-        const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
-
-        // Используем быструю модель с поддержкой зрения
+        const userText = req.body.question || "Предложи 3 креативные идеи, как переделать эту вещь, чтобы дать ей вторую жизнь.";
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Ты — профессиональный эко-стилист и эксперт по апсайклингу. Запрос пользователя: "${userText}". 
+			Твоя задача — давать советы ИСКЛЮЧИТЕЛЬНО по переделке одежды, тканей, обуви и апсайклингу. 
+			ВАЖНОЕ ПРАВИЛО: Если запрос или фотография вообще никак не связаны с одеждой, тканями, модой или апсайклингом, ты должен вежливо ответить: "Извините, но я специализируюсь только на апсайклинге и переделке старых вещей. В других вопросах я плохо разбираюсь."
+			Если тема подходит, дай конкретные, креативные и стильные советы. Пиши на русском языке, доброжелательно и структурированно.`;
 
-        // Даем ИИ жесткую установку, кто он такой
-        const prompt = "Ты — профессиональный эко-стилист и эксперт по апсайклингу. Посмотри на фотографию этой вещи/ткани. Предложи 3 конкретные, креативные и стильные идеи, как переделать эту вещь, чтобы дать ей вторую жизнь и не выбрасывать. Опиши идеи коротко, вдохновляюще и структурировано (по пунктам). Пиши на русском языке.";
+        let result;
 
-        // Отправляем запрос
-        const result = await model.generateContent([prompt, imagePart]);
+        if (req.file) {
+            // Если пользователь загрузил фото
+            function fileToGenerativePart(filePath, mimeType) {
+                return {
+                    inlineData: {
+                        data: Buffer.from(fs.readFileSync(filePath)).toString("base64"),
+                        mimeType
+                    },
+                };
+            }
+            const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
+            result = await model.generateContent([prompt, imagePart]);
+            
+            // Удаляем фотку после анализа
+            fs.unlinkSync(req.file.path);
+        } else {
+            // Если пользователь написал только текст
+            result = await model.generateContent(prompt);
+        }
+
         const responseText = result.response.text();
-
-        // Удаляем фотку с сервера, чтобы она не занимала место (ИИ её уже посмотрел)
-        fs.unlinkSync(req.file.path);
-
         res.json({ advice: responseText });
+
     } catch (err) {
         console.error('Ошибка ИИ:', err);
-        // Если фотка осталась при ошибке - удаляем
         if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-        res.status(500).json({ error: 'ИИ сейчас отдыхает, попробуйте позже.' });
+        // ТЕПЕРЬ ОШИБКА БУДЕТ ВЫВОДИТЬСЯ НА ЭКРАН
+        res.status(500).json({ error: 'Ошибка API: ' + err.message }); 
     }
 });
+
+
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);

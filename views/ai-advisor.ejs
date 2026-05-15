@@ -25,11 +25,17 @@
     </style>
 </head>
 <body>
-    <header class="header">
+    <header class="header" id="header">
         <div class="container">
             <div class="header-content">
-                <a href="/" class="logo-link"><img src="/images/logotip.jpg" class="logo" alt="Logo"></a>
-                <nav class="nav"><a href="/" class="nav-link">Главная</a></nav>
+                <a href="/" class="logo-link">
+                    <img src="/images/logotip.jpg" alt="Recloth virtual stylist" class="logo">
+                </a>
+                <nav class="nav" id="nav">
+                    <div class="nav-content">
+                        <a href="/" class="nav-link">На главную</a>
+                    </div>
+                </nav>
             </div>
         </div>
     </header>
@@ -37,14 +43,16 @@
     <div class="container">
         <div class="ai-container">
             <h1 class="ai-title">AI-Советник</h1>
-            <p class="ai-subtitle">Загрузи фото старой вещи, которую хочешь выбросить, и наш ИИ придумает, как превратить её в шедевр.</p>
+            <p class="ai-subtitle">Опиши свою вещь, задай вопрос или загрузи фото — наш ИИ подскажет лучшие идеи для апсайклинга!</p>
             
             <form id="aiForm">
+                <textarea id="questionInput" rows="3" placeholder="Опишите вашу вещь или задайте вопрос по апсайклингу..." style="width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; font-family: inherit; font-size: 1rem; resize: none; box-sizing: border-box;"></textarea>
+
                 <div class="upload-area" id="uploadArea" onclick="document.getElementById('photoInput').click()">
-                    <p id="uploadText">📸 Нажми сюда, чтобы загрузить фото одежды</p>
+                    <p id="uploadText">📸 Нажми сюда, чтобы прикрепить фото (необязательно)</p>
                     <img id="previewImage" src="" alt="Превью">
                 </div>
-                <input type="file" id="photoInput" accept="image/*" style="display: none;" required onchange="previewFile()">
+                <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewFile()">
                 
                 <button type="submit" class="btn-ai" id="submitBtn">Спросить у ИИ ✨</button>
             </form>
@@ -55,7 +63,6 @@
     </div>
 
     <script>
-        // Показываем превью картинки
         function previewFile() {
             const preview = document.getElementById('previewImage');
             const file = document.getElementById('photoInput').files[0];
@@ -72,21 +79,24 @@
             }
         }
 
-        // Отправка формы на сервер
         document.getElementById('aiForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fileInput = document.getElementById('photoInput');
-            if (!fileInput.files[0]) return alert('Сначала выберите фото!');
+            const questionInput = document.getElementById('questionInput').value.trim();
+            
+            if (!fileInput.files[0] && questionInput === '') {
+                return alert('Пожалуйста, напишите вопрос или загрузите фото!');
+            }
 
             const formData = new FormData();
-            formData.append('photo', fileInput.files[0]);
+            if (fileInput.files[0]) formData.append('photo', fileInput.files[0]);
+            if (questionInput) formData.append('question', questionInput);
 
             const submitBtn = document.getElementById('submitBtn');
             const loader = document.getElementById('loader');
             const resultDiv = document.getElementById('aiResult');
 
-            // Включаем загрузку
             submitBtn.disabled = true;
             submitBtn.innerText = 'Нейросеть думает...';
             loader.style.display = 'block';
@@ -100,11 +110,10 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Превращаем переносы строк от ИИ в HTML теги <br>
                     resultDiv.innerHTML = data.advice.replace(/\n/g, '<br>');
                     resultDiv.style.display = 'block';
                 } else {
-                    alert(data.error);
+                    alert(data.error || 'Произошла ошибка');
                 }
             } catch (err) {
                 alert('Произошла ошибка сети');
