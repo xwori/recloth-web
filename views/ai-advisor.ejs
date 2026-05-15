@@ -6,22 +6,45 @@
     <title>AI-Стилист — Recloth</title>
     <link rel="stylesheet" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        .ai-container { max-width: 700px; margin: 230px auto 100px; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .ai-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #333; margin-bottom: 10px; }
-        .ai-subtitle { color: #666; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6; }
+        .ai-container { max-width: 800px; margin: 230px auto 100px; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .ai-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #333; margin-bottom: 10px; text-align: center; }
+        .ai-subtitle { color: #666; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6; text-align: center; }
         
-        .upload-area { border: 2px dashed #D4AF37; border-radius: 15px; padding: 40px; cursor: pointer; transition: all 0.3s; margin-bottom: 20px; background: #fafafa; }
-        .upload-area:hover { background: #fff8e7; }
-        .upload-area img { max-width: 100%; max-height: 300px; border-radius: 10px; display: none; margin: 0 auto; }
+        /* Окно чата */
+        .chat-box { height: 400px; overflow-y: auto; padding: 20px; background: #f8f9fa; border-radius: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #eee; scroll-behavior: smooth; }
         
-        .btn-ai { background: #D4AF37; color: white; border: none; padding: 15px 30px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%; margin-top: 10px;}
+        /* Пузыри сообщений */
+        .message { max-width: 85%; padding: 15px 20px; border-radius: 15px; font-size: 1.05rem; line-height: 1.6; word-wrap: break-word; }
+        .user-msg { align-self: flex-end; background: #D4AF37; color: white; border-bottom-right-radius: 5px; }
+        .ai-msg { align-self: flex-start; background: white; color: #333; border: 1px solid #e0e0e0; border-bottom-left-radius: 5px; }
+        
+        /* Красивое оформление ответов ИИ внутри пузыря */
+        .ai-msg h3 { margin-top: 0; color: #D4AF37; font-size: 1.2rem; }
+        .ai-msg p { margin-bottom: 10px; }
+        .ai-msg p:last-child { margin-bottom: 0; }
+        .ai-msg ul, .ai-msg ol { padding-left: 20px; margin-bottom: 10px; }
+        .ai-msg strong { color: #222; }
+        
+        /* Картинки в чате */
+        .chat-image { max-width: 250px; border-radius: 10px; margin-bottom: 10px; display: block; border: 2px solid rgba(255,255,255,0.3); }
+
+        /* Форма ввода */
+        .input-area { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid #eee; }
+        textarea { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ddd; font-family: inherit; font-size: 1rem; resize: none; box-sizing: border-box; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+        textarea:focus { border-color: #D4AF37; }
+        
+        .controls { display: flex; gap: 15px; align-items: center; justify-content: space-between; }
+        .upload-btn { background: #f8f9fa; border: 1px dashed #D4AF37; color: #666; padding: 10px 20px; border-radius: 30px; cursor: pointer; transition: all 0.3s; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .upload-btn:hover { background: #fff8e7; }
+        .preview-mini { height: 30px; border-radius: 5px; display: none; }
+        
+        .btn-ai { background: #D4AF37; color: white; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
         .btn-ai:hover { background: #b5952f; transform: translateY(-2px); }
         .btn-ai:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         
-        .ai-result { margin-top: 30px; padding: 25px; background: #f8f9fa; border-radius: 15px; text-align: left; display: none; line-height: 1.7; font-size: 1.05rem; color: #333; border-left: 5px solid #D4AF37;}
-        .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #D4AF37; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .typing-indicator { align-self: flex-start; background: transparent; color: #999; font-style: italic; font-size: 0.9rem; padding: 0 10px; display: none; }
     </style>
 </head>
 <body>
@@ -45,64 +68,115 @@
             <h1 class="ai-title">AI-Советник</h1>
             <p class="ai-subtitle">Опиши свою вещь, задай вопрос или загрузи фото — наш ИИ подскажет лучшие идеи для апсайклинга!</p>
             
-            <form id="aiForm">
-                <textarea id="questionInput" rows="3" placeholder="Опишите вашу вещь или задайте вопрос по апсайклингу..." style="width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; font-family: inherit; font-size: 1rem; resize: none; box-sizing: border-box;"></textarea>
-
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('photoInput').click()">
-                    <p id="uploadText">📸 Нажми сюда, чтобы прикрепить фото (необязательно)</p>
-                    <img id="previewImage" src="" alt="Превью">
+            <div class="chat-box" id="chatBox">
+                <div class="message ai-msg">
+                    <p>Привет! Я виртуальный эко-стилист Recloth. Готов помочь тебе подарить старым вещам новую жизнь. Что будем переделывать сегодня?</p>
                 </div>
-                <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewFile()">
-                
-                <button type="submit" class="btn-ai" id="submitBtn">Спросить у ИИ ✨</button>
-            </form>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">Нейросеть печатает ответ...</div>
 
-            <div class="loader" id="loader"></div>
-            <div class="ai-result" id="aiResult"></div>
+            <div class="input-area">
+                <form id="aiForm">
+                    <textarea id="questionInput" rows="2" placeholder="Например: Как сделать шопер из старых джинсов?"></textarea>
+                    
+                    <div class="controls">
+                        <div class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                            <span>📸 Прикрепить фото</span>
+                            <img id="previewImage" class="preview-mini" src="" alt="Превью">
+                        </div>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewFile()">
+                        
+                        <button type="submit" class="btn-ai" id="submitBtn">Отправить ✨</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
+        const chatBox = document.getElementById('chatBox');
+        let tempPhotoDataUrl = null;
+
+        // Показываем мини-превью картинки рядом с кнопкой
         function previewFile() {
             const preview = document.getElementById('previewImage');
             const file = document.getElementById('photoInput').files[0];
-            const uploadText = document.getElementById('uploadText');
             
             if (file) {
                 const reader = new FileReader();
                 reader.onloadend = function () {
+                    tempPhotoDataUrl = reader.result;
                     preview.src = reader.result;
                     preview.style.display = 'block';
-                    uploadText.style.display = 'none';
                 }
                 reader.readAsDataURL(file);
             }
         }
 
+        // Функция добавления сообщения в чат
+        function appendMessage(sender, text, photoUrl = null) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'user' ? 'user-msg' : 'ai-msg');
+
+            let contentHtml = '';
+            
+            // Если есть картинка, добавляем её
+            if (photoUrl) {
+                contentHtml += `<img src="${photoUrl}" class="chat-image">`;
+            }
+            
+            // Если это ИИ, парсим Markdown в красивый HTML
+            if (sender === 'ai') {
+                contentHtml += marked.parse(text);
+            } else {
+                // Защита от HTML-взлома для текста пользователя
+                contentHtml += text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+            }
+
+            msgDiv.innerHTML = contentHtml;
+            chatBox.appendChild(msgDiv);
+            
+            // Прокручиваем чат в самый низ
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Отправка формы
         document.getElementById('aiForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fileInput = document.getElementById('photoInput');
-            const questionInput = document.getElementById('questionInput').value.trim();
+            const questionInput = document.getElementById('questionInput');
+            const userText = questionInput.value.trim();
             
-            if (!fileInput.files[0] && questionInput === '') {
-                return alert('Пожалуйста, напишите вопрос или загрузите фото!');
+            if (!fileInput.files[0] && userText === '') {
+                return; // Ничего не делаем, если пусто
             }
 
+            // 1. Отображаем сообщение пользователя в чате
+            appendMessage('user', userText, tempPhotoDataUrl);
+
+            // 2. Готовим данные для сервера
             const formData = new FormData();
             if (fileInput.files[0]) formData.append('photo', fileInput.files[0]);
-            if (questionInput) formData.append('question', questionInput);
+            if (userText) formData.append('question', userText);
 
+            // 3. Очищаем форму для следующего вопроса
+            questionInput.value = '';
+            fileInput.value = '';
+            document.getElementById('previewImage').style.display = 'none';
+            tempPhotoDataUrl = null;
+
+            // 4. Показываем анимацию "печатает..."
             const submitBtn = document.getElementById('submitBtn');
-            const loader = document.getElementById('loader');
-            const resultDiv = document.getElementById('aiResult');
-
+            const typingIndicator = document.getElementById('typingIndicator');
+            
             submitBtn.disabled = true;
-            submitBtn.innerText = 'Нейросеть думает...';
-            loader.style.display = 'block';
-            resultDiv.style.display = 'none';
+            typingIndicator.style.display = 'block';
+            chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
+                // Отправляем запрос на твой сервер
                 const response = await fetch('/api/analyze-photo', {
                     method: 'POST',
                     body: formData
@@ -110,17 +184,24 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    resultDiv.innerHTML = data.advice.replace(/\n/g, '<br>');
-                    resultDiv.style.display = 'block';
+                    // Добавляем ответ ИИ в чат
+                    appendMessage('ai', data.advice);
                 } else {
-                    alert(data.error || 'Произошла ошибка');
+                    appendMessage('ai', `**Ошибка:** ${data.error}`);
                 }
             } catch (err) {
-                alert('Произошла ошибка сети');
+                appendMessage('ai', '**Упс!** Произошла ошибка сети, попробуйте еще раз.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'Спросить у ИИ ✨';
-                loader.style.display = 'none';
+                typingIndicator.style.display = 'none';
+            }
+        });
+        
+        // Отправка по нажатию Enter (если не нажат Shift)
+        document.getElementById('questionInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('submitBtn').click();
             }
         });
     </script>
