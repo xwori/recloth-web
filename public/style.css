@@ -380,8 +380,10 @@ h3 {
 }
 
 .about-card-icon {
-    font-size: 3rem;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .about-card-title {
@@ -806,8 +808,14 @@ h3 {
 }
 
 .howto-number {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 3.5rem;
+    font-family: 'Playfair Display', serif;
+    color: rgba(212, 175, 55, 0.3);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    display: inline-block;
+    border-bottom: 2px solid #D4AF37;
 }
 
 .howto-title {
@@ -1196,3 +1204,38 @@ h3 {
 .mb-1 { margin-bottom: 1rem; }
 .mb-2 { margin-bottom: 2rem; }
 
+
+/* Additional Mobile Responsiveness */
+@media (max-width: 768px) {
+    .about-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .howto-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        width: 100%;
+        overflow-x: hidden;
+    }
+    body {
+        overflow-x: hidden;
+    }
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    .section-title {
+        font-size: 2rem;
+    }
+    .about-card, .howto-step {
+        width: 100%;
+    }
+}
