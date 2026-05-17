@@ -99,68 +99,7 @@ app.get('/api/articles/:slug', async (req, res) => {
     }
 });
 
-// Получить все идеи трансформаций
-app.get('/api/ideas', async (req, res) => {
-    try {
-        const ideasResult = await pool.query(`
-            SELECT * FROM ideas 
-            WHERE is_active = true 
-            ORDER BY created_at DESC
-        `);
-        
-        const ideas = [];
-        for (const idea of ideasResult.rows) {
-            // Получаем материалы для идеи
-            const materialsResult = await pool.query(`
-                SELECT m.name, im.quantity
-                FROM idea_materials im
-                JOIN materials m ON im.material_id = m.id
-                WHERE im.idea_id = $1
-            `, [idea.id]);
-            
-            // Получаем шаги для идеи
-            const stepsResult = await pool.query(`
-                SELECT step_number, description, image_url
-                FROM idea_steps
-                WHERE idea_id = $1
-                ORDER BY step_number
-            `, [idea.id]);
-            
-            ideas.push({
-                ...idea,
-                materials: materialsResult.rows,
-                steps: stepsResult.rows
-            });
-        }
-        
-        res.json(ideas);
-    } catch (err) {
-        console.error('Ошибка загрузки идей:', err);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
 
-// Получить галерею работ
-app.get('/api/gallery', async (req, res) => {
-    try {
-        const result = await pool.query(`
-            SELECT gw.id, gw.title, gw.description, gw.image_url, 
-                   gw.likes_count, gw.created_at,
-                   u.name as author_name, u.instagram, u.telegram,
-                   c.name as category_name, c.slug as category_slug
-            FROM gallery_works gw
-            LEFT JOIN users u ON gw.user_id = u.id
-            LEFT JOIN categories c ON gw.category_id = c.id
-            WHERE gw.is_approved = true
-            ORDER BY gw.created_at DESC
-            LIMIT 50
-        `);
-        res.json(result.rows);
-    } catch (err) {
-        console.error('Ошибка загрузки галереи:', err);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
 
 // Получить категории
 app.get('/api/categories', async (req, res) => {
@@ -202,61 +141,7 @@ app.get('/article', (req, res) => {
     res.render('article'); // Это заставит сервер искать файл views/article.ejs
 });
 
-// Отправить работу в галерею (с загрузкой фото)
-app.post('/api/gallery', upload.single('photo'), async (req, res) => {
-    try {
-        const { name, email, description } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-        
-        if (!imageUrl) {
-            return res.status(400).json({ error: 'Фото обязательно' });
-        }
-        
-        // Находим или создаём пользователя
-        let userResult = await pool.query(
-            'SELECT id FROM users WHERE email = $1',
-            [email]
-        );
-        
-        let userId;
-        if (userResult.rows.length === 0) {
-            const newUser = await pool.query(
-                'INSERT INTO users (name, email, is_active) VALUES ($1, $2, true) RETURNING id',
-                [name, email]
-            );
-            userId = newUser.rows[0].id;
-        } else {
-            userId = userResult.rows[0].id;
-        }
-        
-        // Добавляем работу в галерею (is_approved = false, нужна модерация)
-        await pool.query(
-            `INSERT INTO gallery_works (user_id, title, description, image_url, is_approved, created_at) 
-             VALUES ($1, $2, $3, $4, $5, NOW())`,
-            [userId, name, description, imageUrl, false]
-        );
-        
-        res.json({ success: true, message: 'Работа отправлена на модерацию' });
-    } catch (err) {
-        console.error('Ошибка отправки работы:', err);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
 
-// Лайк для работы в галерее
-app.post('/api/gallery/:id/like', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query(
-            'UPDATE gallery_works SET likes_count = likes_count + 1 WHERE id = $1',
-            [id]
-        );
-        res.json({ success: true });
-    } catch (err) {
-        console.error('Ошибка лайка:', err);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
 
 // Если кто-то все же перейдет по старой ссылке index.html, 
 // сервер просто перенаправит его на главную
