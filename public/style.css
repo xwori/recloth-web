@@ -1006,191 +1006,97 @@ h3 {
     transform: translateY(0);
 }
 
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
 @media (max-width: 768px) {
+    /* --- ФИКС 1: Правильный отступ от шапки, чтобы текст не прятался --- */
+    body {
+        padding-top: 170px !important;
+    }
+
+    /* --- ФИКС 2: Шапка и логотип --- */
     .header-logo,
     .header {
-        height: 160px !important;
+        height: auto !important;
+        min-height: 160px;
     }
-
+    
     .logo {
-        height: 100px !important;
-        padding: 15px 20px !important;
+        height: 90px !important;
+        padding: 10px !important;
+        position: relative !important;
     }
 
+    /* --- ФИКС 3: Возвращаем меню на экран --- */
     .nav-bar,
     .nav {
-        top: 120px !important;
+        top: 90px !important; 
     }
-
+    
     .nav-content {
-        position: fixed;
-        top: 80px;
-        left: 0;
-        right: 0;
-        background: var(--white);
-        flex-direction: column;
-        padding: 2rem;
-        box-shadow: 0 4px 10px var(--shadow);
-        transform: translateX(-100%);
-        transition: var(--transition);
-        z-index: 999;
-        height: auto;
-        gap: 1.5rem;
-        align-items: flex-start;
-        max-height: calc(100vh - 80px);
-        overflow-y: auto;
+        position: relative !important;
+        top: 0 !important;
+        background: transparent !important;
+        flex-direction: row !important; /* Ссылки в строку */
+        flex-wrap: wrap !important; /* Разрешаем перенос на новую строку */
+        justify-content: center !important;
+        padding: 10px !important;
+        box-shadow: none !important;
+        transform: none !important; /* САМОЕ ГЛАВНОЕ: Отменяем скрытие за экраном */
+        height: auto !important;
+        gap: 8px !important;
     }
 
-    .nav-content.active {
-        transform: translateX(0);
-    }
-
+    /* --- ФИКС 4: Красивые кнопки-ссылки на телефоне --- */
     .nav-link {
-        font-size: 0.85rem;
-        width: 100%;
-        text-align: left;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid var(--border-soft);
+        font-size: 0.85rem !important;
+        width: auto !important;
+        text-align: center !important;
+        padding: 6px 12px !important;
+        border-bottom: none !important;
+        background: #F8F9FA !important;
+        border-radius: 20px !important;
+        border: 1px solid var(--border-soft) !important;
     }
+    
+    .nav-link::after { display: none !important; }
 
-    .nav-link::after {
-        display: none;
-    }
+    /* Прячем кнопку "гамбургер", так как меню теперь всегда видно */
+    .mobile-menu-btn { display: none !important; }
 
-    .mobile-menu-btn {
-        display: flex;
-    }
-
-    .mobile-menu-btn.active span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .mobile-menu-btn.active span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .mobile-menu-btn.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -6px);
-    }
-
-    .hero {
-        min-height: 80vh;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    body {
-        padding-top: 0 !important;
-    }
-
-    body {
-        padding-top: 140px;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .btn {
-        width: 100%;
-    }
-
-    .about-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .articles-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .ideas-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .idea-images {
-        flex-direction: column;
-    }
-
-    .idea-arrow {
-        transform: rotate(90deg);
-    }
-
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .howto-steps {
-        grid-template-columns: 1fr;
-    }
-
-    .contacts-content {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .footer-links {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
+    /* --- Твои старые стили для карточек --- */
+    .hero { min-height: 80vh; margin-top: 0 !important; padding-top: 0 !important; }
+    .hero-buttons { flex-direction: column; align-items: stretch; }
+    .btn { width: 100%; }
+    .about-cards { grid-template-columns: 1fr; }
+    .articles-grid { grid-template-columns: 1fr; }
+    .ideas-grid { grid-template-columns: 1fr; }
+    .idea-images { flex-direction: column; }
+    .idea-arrow { transform: rotate(90deg); }
+    .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .howto-steps { grid-template-columns: 1fr; }
+    .contacts-content { grid-template-columns: 1fr; }
+    .footer-content { flex-direction: column; text-align: center; }
+    .footer-links { flex-direction: column; gap: 0.5rem; }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 0 15px;
-    }
-
-    .logo {
-        width: 200px;
-        height: 65px;
-        padding: 8px;
-    }
-
-    .hero-content {
-        padding: 1rem;
-    }
-
-    .section-title {
-        margin-bottom: 2rem;
-    }
-
-    .about-text {
-        font-size: 1rem;
-    }
-
-    .contact-form {
-        padding: 1.5rem;
-    }
-
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
+    .container { padding: 0 15px; }
+    .logo { width: 200px; height: 65px; padding: 8px; }
+    .hero-content { padding: 1rem; }
+    .section-title { margin-bottom: 2rem; }
+    .about-text { font-size: 1rem; }
+    .contact-form { padding: 1.5rem; }
+    .gallery-grid { grid-template-columns: 1fr; }
 }
 
 @media (min-width: 1920px) {
-    .container {
-        max-width: 1400px;
-    }
+    .container { max-width: 1400px; }
 }
 
 /* ============================================
    UTILITY CLASSES
    ============================================ */
-.hidden {
-    display: none !important;
-}
-
-.text-center {
-    text-align: center;
-}
-
+.hidden { display: none !important; }
+.text-center { text-align: center; }
 .mt-1 { margin-top: 1rem; }
 .mt-2 { margin-top: 2rem; }
 .mb-1 { margin-bottom: 1rem; }
